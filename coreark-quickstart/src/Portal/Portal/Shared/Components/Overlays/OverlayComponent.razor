@@ -1,0 +1,64 @@
+﻿@using BlazorStyled
+<Styled @bind-Classname="@overlay">
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 2;
+    cursor: pointer;
+</Styled>
+
+<Styled @bind-Classname="@btnLink">
+    text-decoration: none;
+    color: white;
+</Styled>
+
+<Styled @bind-Classname="@overlayContent">
+    background-color: white;
+    border-radius: 10px 10px;
+    padding: 20px;
+</Styled>
+
+@if (Show)
+{
+    <div class="@overlay">
+        <div class="row">
+            <div class="col">
+                <button class="btn @btnLink float-right" style="color: white" @onclick="ClickExit">x</button>
+            </div>
+        </div>
+        <div class="col-md-8 offset-md-2 col-12 @overlayContent">
+            @ChildContent
+        </div>
+    </div>
+}
+
+@code
+{
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnCloseClick { get; set; }
+
+    [Parameter]
+    public bool Show { get; set; }
+    
+    #region Css
+
+    private string overlay;
+    private string overlayContent;
+    private string btnLink;
+
+    #endregion
+
+    public async Task ClickExit()
+    {
+        await OnCloseClick.InvokeAsync(true);
+    }
+
+}

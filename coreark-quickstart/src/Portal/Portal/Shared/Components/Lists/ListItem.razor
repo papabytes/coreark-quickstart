@@ -1,0 +1,41 @@
+﻿@using BlazorStyled
+<Styled @bind-Classname="@_hoverable">
+    margin: 0
+</Styled>
+<Styled Classname="@_hoverable" PseudoClass="PseudoClasses.Hover">
+    background: rgba(132, 212, 157, 0.26);
+</Styled>
+
+<div class="card my-2 @_hoverable">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-10">
+                <h5 class="card-title" style="cursor: pointer" @onclick="@(async e => await ClickedView.InvokeAsync(Id))">@Title</h5>
+                @*<h6 class="card-subtitle mb-2 text-muted">@Subtitle</h6>*@                
+            </div>
+            <div class="col-2">
+                <button class="btn btn-outline-danger btn-sm float-right" @onclick="@(async e => await ClickedDelete.InvokeAsync(Id))">Delete</button>        
+            </div>
+        </div>
+    </div>
+</div>
+
+@code
+{
+    private string _hoverable { get; set; }
+    
+    [Parameter]
+    public string Title { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Subtitle { get; set; } = string.Empty;
+    
+    [Parameter]
+    public Guid Id { get; set; }
+
+    [Parameter] 
+    public EventCallback<Guid> ClickedView { get; set; }
+    
+    [Parameter] 
+    public EventCallback<Guid> ClickedDelete { get; set; }
+}

@@ -1,0 +1,13 @@
+﻿@page "/authentication/login"
+@using Portal.Services
+@inject NavigationManager Navigation
+@inject IConfigurationService ConfigurationService
+
+@code
+{
+    protected override Task OnInitializedAsync()
+    {
+        Navigation.NavigateTo($"{ConfigurationService.GetIdentityBaseAddress()}/Identity/Account/Login?returnUrl={Navigation.BaseUri}authentication/logged-in");
+        return Task.CompletedTask;
+    }
+}

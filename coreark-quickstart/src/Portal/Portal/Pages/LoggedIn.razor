@@ -1,0 +1,25 @@
+@page "/authentication/logged-in"
+@using Microsoft.AspNetCore.WebUtilities
+@using Portal.Services
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager Navigation
+@inject Blazored.LocalStorage.ILocalStorageService LocalStore
+
+
+<p>authenticating...</p>
+
+@code{
+      
+    protected override async void OnInitialized()
+    {
+        var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("token", out var token))
+        {
+            await LocalStore.SetItemAsync(Constants.ACCESS_TOKEN_KEY, token.ToString());
+            
+            ((CustomAuthenticationStateProvider) AuthenticationStateProvider).MarkUserAsAuthenticated(token);    
+        }
+        Navigation.NavigateTo("/");
+    }
+}

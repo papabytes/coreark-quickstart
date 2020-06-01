@@ -1,0 +1,43 @@
+﻿@using Portal.Services
+
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IConfigurationService ConfigurationService
+
+<AuthorizeView>
+    <Authorized>
+        Hello,<a href="@AccountManagementUrl()" target="_blank"> @context.User.Identity.Name</a>
+        <button class="nav-link btn btn-link" @onclick="BeginSignOut">Log out</button>
+    </Authorized>
+    <NotAuthorized>
+        <a href="" @onclick="GoToLogin">Log in</a>
+        <a href="" @onclick="GoToRegister">Register</a>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code{
+
+    private async Task<bool> BeginSignOut(MouseEventArgs args)
+    {
+        Navigation.NavigateTo($"{ConfigurationService.GetIdentityBaseAddress()}/Identity/Account/Logout?returnUrl={Navigation.BaseUri}authentication/logged-out");
+        return await Task.FromResult(true);
+    }
+
+    private async Task<bool> GoToLogin(MouseEventArgs args)
+    {
+        Navigation.NavigateTo($"{ConfigurationService.GetIdentityBaseAddress()}/Identity/Account/Login?returnUrl={Navigation.BaseUri}authentication/logged-in");
+        return await Task.FromResult(true);
+    }
+
+    private async Task<bool> GoToRegister(MouseEventArgs args)
+    {
+        Navigation.NavigateTo($"{ConfigurationService.GetIdentityBaseAddress()}/Identity/Account/Register?returnUrl={ConfigurationService.GetIdentityBaseAddress()}/Identity/Account/Login?returnUrl={Navigation.BaseUri}authentication/logged-in");
+        return await Task.FromResult(true);
+    }
+
+    private string AccountManagementUrl()
+    {
+        return $"{ConfigurationService.GetIdentityBaseAddress()}/Identity/Account/Manage";
+    }
+
+}
