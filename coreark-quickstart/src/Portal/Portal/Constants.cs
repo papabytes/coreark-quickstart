@@ -2,6 +2,6 @@
 {
     public static class Constants
     {
-        public const string ACCESS_TOKEN_KEY = "funer365.accessToken";
+        public const string ACCESS_TOKEN_KEY = "accessToken";
     }
 }
