@@ -1,6 +1,6 @@
 {
-  "name": "Funer365.Portal",
-  "short_name": "Funer365.Portal",
+  "name": "Demo.Portal",
+  "short_name": "Demo.Portal",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",

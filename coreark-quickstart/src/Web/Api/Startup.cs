@@ -1,3 +1,4 @@
+using System;
 using AutoMapper;
 using CoreArk.Packages.Core;
 using CoreArk.Packages.Core.Interfaces;
@@ -18,9 +19,15 @@ namespace Api
 {
     public class Startup
     {
+        private readonly string _apiDescription;
+        private readonly string _environment;
+        private readonly string _version;
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            _environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            _version = Environment.GetEnvironmentVariable("ASPNETCORE_APP_VERSION");
+            _apiDescription = $"[{_environment}] Schréder Hyperion Api - ({_version})";
         }
 
         public IConfiguration Configuration { get; }
@@ -52,7 +59,15 @@ namespace Api
 
             services.AddAutoMapper(typeof(CompanySettingsMappingProfile).Assembly);
 
-            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "<Your Api Name>", Version = "v1"}); });
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc(_version,
+                    new OpenApiInfo
+                    {
+                        Title = _apiDescription,
+                        Version = _version
+                    });
+            });
 
             services.AddCors(options =>
             {
@@ -64,14 +79,13 @@ namespace Api
                             .AllowAnyMethod();
                     });
             });
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DataContext dataContext)
         {
             dataContext.Database.Migrate();
-            
+
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
 
@@ -79,7 +93,7 @@ namespace Api
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "<Your API> V1");
+                c.SwaggerEndpoint($"/swagger/<{_version}/swagger.json", _apiDescription);
                 c.RoutePrefix = string.Empty;
             });
 
@@ -92,7 +106,7 @@ namespace Api
             app.UseCors();
 
             app.UseAuthentication();
-            
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
